@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "120615867415",
+    "project_id": "responsive-design-cac6f",
+    "storage_bucket": "responsive-design-cac6f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120615867415:android:286533fded9031bd307852",
+        "android_client_info": {
+          "package_name": "com.example.responsive_design"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNn-dcxWPW6CmHYwkkq1LrI0B_iNoCQpo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
