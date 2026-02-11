@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_design/auth_service.dart';
+import 'package:responsive_design/profile_card.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +19,9 @@ class _LoginScreenState extends State<LoginScreen> {
   // Object used for extracting data from fields
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  bool _isLoading = false; // Spinning circle feedback
+  final _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
                 _password(),
                 const SizedBox(height: 20),
-                _loginButton(),
+                // Show spinning circle while logging in
+                _isLoading ? const CircularProgressIndicator() : _loginButton(),
               ],
             ),
           ),
@@ -97,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter your password'; 
+          return 'Please enter your password';
         }
         // Length of password has to be at least 8 characters
         if (value.length < 8) {
@@ -119,16 +125,40 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _submitLogin() {
+  void _submitLogin() async {
     // Calls all of the validator function in the Form
     // I am certain currentState is not going to be null
-    if (_formKey.currentState!.validate()) {
-      final username = _usernameController.text.trim();
-      final password = _passwordController.text;
+    if (!_formKey.currentState!.validate()) return;
+
+    // Start spinning the progress indicator
+    setState(() => _isLoading = true);
+
+    final email = _usernameController.text;
+    final password = _passwordController.text;
+
+    try {
+      await _authService.signIn(email: email, password: password);
+
+      // From the inherited state, we can check to make sure the signing widget is still on screen
+      if (!mounted) return; // TODO signOut
+
+      // If successful, goes back to Profile Card
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const ProfileCard()),
+      );
+    } catch (e) {
+      if (!mounted) return; // TODO error popup
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Logging in user $username (password length: ${password.length}) ')),
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
       );
+    } finally {
+      if (mounted) { // Stop the spinning widget 
+        setState(() => _isLoading = false); 
+      }
     }
   }
 }
