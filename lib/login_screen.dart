@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_design/auth_service.dart';
 import 'package:responsive_design/profile_card.dart';
+import 'package:responsive_design/signUp_screen.dart'; 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,6 +23,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isLoading = false; // Spinning circle feedback
   final _authService = AuthService();
+
+  // Dispose of controllers 
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 _password(),
                 const SizedBox(height: 20),
                 // Show spinning circle while logging in
-                _isLoading ? const CircularProgressIndicator() : _loginButton(),
+                _isLoading ? const CircularProgressIndicator() : _loginButton(), 
+                const SizedBox(height: 12),
+                _signupButton(),
               ],
             ),
           ),
@@ -67,15 +78,19 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _username() {
     return TextFormField(
       controller: _usernameController,
+      keyboardType: TextInputType.emailAddress,
       decoration: const InputDecoration(
-        labelText: 'Username',
+        labelText: 'Username (Email)',
         border: const OutlineInputBorder(),
         prefixIcon: Icon(Icons.person),
       ),
       validator: (value) {
         // Trim gets rid of white sapces
         if (value == null || value.trim().isEmpty) {
-          return 'Please enter your usernamae';
+          return 'Please enter your email';
+        }
+        if (!value.contains('@') || !value.contains('.')) {
+          return 'Please enter a valid email';
         }
         return null;
       },
@@ -122,6 +137,18 @@ class _LoginScreenState extends State<LoginScreen> {
         textStyle: const TextStyle(fontSize: 18),
       ),
       child: const Text('Login'),
+    );
+  }
+
+  Widget _signupButton() {
+    return OutlinedButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (_) => const SignUpScreen()),
+        );
+      },
+      child: const Text('Create an account'),
     );
   }
 

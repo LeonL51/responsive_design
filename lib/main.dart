@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_design/login_screen.dart';
 import 'package:responsive_design/profile_card.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:responsive_design/firebase_options.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Responsive Design ',
-      home: const ProfileCard(),
+      home: const LoginScreen(),
     );
   }
 }
